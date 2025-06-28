@@ -23,7 +23,6 @@ module.exports = {
   ignorePatterns: [
     '.eslintrc.js',
     'app/private/**',
-    'vagrant/**',
     'frontend/**',
     'data/static/codefixes/**',
     'dist/**'

@@ -2,57 +2,14 @@
   "name": "juice-shop",
   "version": "18.0.0",
   "private": true,
-  "description": "Probably the most modern and sophisticated insecure web application",
-  "keywords": [
-    "web security",
-    "web application security",
-    "webappsec",
-    "owasp",
-    "pentest",
-    "pentesting",
-    "security",
-    "vulnerable",
-    "vulnerability",
-    "broken",
-    "bodgeit",
-    "ctf",
-    "capture the flag",
-    "awareness"
-  ],
-  "homepage": "https://owasp-juice.shop",
-  "bugs": {
-    "url": "https://github.com/juice-shop/juice-shop/issues"
-  },
+  "description": "A premier online shopping experience",
   "repository": {
     "type": "git",
     "url": "https://github.com/juice-shop/juice-shop.git"
   },
-  "license": "MIT",
-  "author": "Björn Kimminich <bjoern.kimminich@owasp.org> (https://kimminich.de)",
-  "contributors": [
-    "Björn Kimminich",
-    "Jannik Hollenbach",
-    "Aashish683",
-    "greenkeeper[bot]",
-    "MarcRler",
-    "agrawalarpit14",
-    "Scar26",
-    "ShubhamPalriwala",
-    "CaptainFreak",
-    "JuiceShopBot",
-    "Supratik Das",
-    "the-pro",
-    "Ziyang Li",
-    "Timo Pagel",
-    "aaryan10",
-    "..."
-  ],
   "scripts": {
     "build:frontend": "cd frontend && npm run build",
     "build:server": "tsc",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "frisby": "nyc --report-dir=./build/reports/coverage/api-tests jest --silent --runInBand --forceExit",
     "postinstall": "cd frontend && npm install --legacy-peer-deps && cd .. && npm run build:frontend && (npm run --silent build:server || cd .)",
     "lint": "eslint *.ts data lib models routes test/**/*.ts views && cd frontend && npm run lint && npm run lint:scss && cd ..",
     "lint:config": "schema validate -s config.schema.yml",
@@ -64,43 +21,7 @@
     "start": "node build/app",
     "test": "cd frontend && npm run test -- --watch=false --source-map=true && cd .. && npm run test:server",
     "test:chromium": "cd frontend && npm run test -- --watch=false --source-map=false --browsers=ChromiumHeadless && cd .. && npm run test:server",
-    "test:server": "nyc --report-dir=./build/reports/coverage/server-tests mocha -r ts-node/register -r source-map-support/register --recursive test/server/**/*.ts",
-    "test:api": "npm run frisby",
-    "rsn": "ts-node rsn/rsn.ts",
-    "rsn:verbose": "ts-node rsn/rsn-verbose.ts",
-    "rsn:update": "ts-node rsn/rsn-update.ts",
-    "vagrant": "cd vagrant && vagrant up",
-    "sbom": "npm run sbom:json && npm run sbom:xml",
-    "sbom:json": "cyclonedx-npm --omit=dev --output-format=JSON --output-file=bom.json",
-    "sbom:xml": " cyclonedx-npm --omit=dev --output-format=XML  --output-file=bom.xml"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.[tj]s$": [
-        "ts-jest",
-        {
-          "diagnostics": false
-        }
-      ]
-    },
-    "globalSetup": "./test/apiTestsSetup.ts",
-    "globalTeardown": "./test/apiTestsTeardown.ts",
-    "modulePathIgnorePatterns": [
-      "/build"
-    ],
-    "setupFilesAfterEnv": [
-      "./test/apiTestsSetupJest.ts"
-    ],
-    "testMatch": [
-      "<rootDir>/test/api/*Spec.[jt]s"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/frontend/node_modules/"
-    ],
-    "testEnvironmentOptions": {
-      "url": "http://localhost"
-    }
+    "test:server": "nyc --report-dir=./build/reports/coverage/server-tests mocha -r ts-node/register -r source-map-support/register --recursive test/server/**/*.ts"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
