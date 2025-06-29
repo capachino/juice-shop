@@ -56,7 +56,6 @@ export class FaucetComponent {
   withdrawAmount: number = null
   successResponse = false
   mintButtonDisabled = true
-  challengeSolved = false
   nftMintText = 'Mint the Pot - 1000 BEE'
   errorMessage = ''
   metamaskAddress = ''

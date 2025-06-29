@@ -4,7 +4,6 @@
  */
 
 import { type Request, type Response } from 'express'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 
 export function retrieveLoggedInUser () {

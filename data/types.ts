@@ -3,7 +3,6 @@ import type { BasketModel } from 'models/basket'
 import type { BasketItemModel } from 'models/basketitem'
 import type { CaptchaModel } from 'models/captcha'
 import type { CardModel } from 'models/card'
-import type { ChallengeModel } from 'models/challenge'
 import type { DeliveryModel } from 'models/delivery'
 import type { MemoryModel } from 'models/memory'
 import type { ProductModel } from 'models/product'
@@ -11,8 +10,6 @@ import type { RecycleModel } from 'models/recycle'
 import type { SecurityAnswerModel } from 'models/securityAnswer'
 import type { SecurityQuestionModel } from 'models/securityQuestion'
 import type { UserModel } from 'models/user'
-
-export type Challenge = ChallengeModel
 
 export type User = UserModel
 

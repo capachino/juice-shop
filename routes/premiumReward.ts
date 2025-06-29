@@ -5,7 +5,6 @@
 
 import path from 'node:path'
 import { type Request, type Response } from 'express'
-import { challenges } from '../data/datacache'
 
 export function servePremiumContent () {
   return (req: Request, res: Response) => {

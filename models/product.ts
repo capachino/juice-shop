@@ -4,7 +4,6 @@
  */
 
 /* jslint node: true */
-import * as utils from '../lib/utils'
 import {
   Model,
   type InferAttributes,
@@ -14,8 +13,6 @@ import {
   type Sequelize
 } from 'sequelize'
 import { type BasketItemModel } from './basketitem'
-import { challenges } from '../data/datacache'
-import * as security from '../lib/insecurity'
 
 class Product extends Model<
 InferAttributes<Product>,

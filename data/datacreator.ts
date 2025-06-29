@@ -25,7 +25,7 @@ import type { Memory as MemoryConfig, Product as ProductConfig } from '../lib/co
 import config from 'config'
 import * as utils from '../lib/utils'
 import type { StaticUser, StaticUserAddress, StaticUserCard } from './staticData'
-import { loadStaticChallengeData, loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
+import { loadStaticDeliveryData, loadStaticUserData, loadStaticSecurityQuestionsData } from './staticData'
 import { ordersCollection, reviewsCollection } from './mongodb'
 import { AllHtmlEntities as Entities } from 'html-entities'
 import * as datacache from './datacache'
@@ -39,7 +39,6 @@ export default async () => {
   const creators = [
     createSecurityQuestions,
     createUsers,
-    createChallenges,
     createRandomFakeUsers,
     createProducts,
     createBaskets,

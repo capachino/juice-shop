@@ -6,7 +6,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 
 import { WalletModel } from '../models/wallet'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import { UserModel } from '../models/user'
 import { CardModel } from '../models/card'

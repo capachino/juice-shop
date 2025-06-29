@@ -10,7 +10,6 @@ import { type Request, type Response } from 'express'
 import { AllHtmlEntities as Entities } from 'html-entities'
 
 import { themes } from '../views/themes/themes'
-import { challenges } from '../data/datacache'
 import * as utils from '../lib/utils'
 
 const entities = new Entities()
