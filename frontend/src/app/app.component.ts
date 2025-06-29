@@ -9,7 +9,6 @@ import { DOCUMENT } from '@angular/common'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 import { RouterOutlet } from '@angular/router'
 import { WelcomeComponent } from './welcome/welcome.component'
-import { ChallengeSolvedNotificationComponent } from './challenge-solved-notification/challenge-solved-notification.component'
 import { ServerStartedNotificationComponent } from './server-started-notification/server-started-notification.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { SidenavComponent } from './sidenav/sidenav.component'
@@ -21,7 +20,7 @@ dom.watch()
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [MatSidenavContainer, MatSidenav, SidenavComponent, NavbarComponent, ServerStartedNotificationComponent, ChallengeSolvedNotificationComponent, WelcomeComponent, RouterOutlet]
+  imports: [MatSidenavContainer, MatSidenav, SidenavComponent, NavbarComponent, ServerStartedNotificationComponent, WelcomeComponent, RouterOutlet]
 })
 export class AppComponent {
   constructor (@Inject(DOCUMENT) private readonly _document: HTMLDocument, private readonly translate: TranslateService) {

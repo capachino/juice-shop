@@ -26,13 +26,4 @@ export class ChallengeCardComponent implements OnInit {
 
   @Input()
   public applicationConfiguration: Config
-
-  public hasInstructions: (challengeName: string) => boolean = () => false
-  public startHackingInstructorFor: (challengeName: string) => Promise<void> = async () => {}
-
-  async ngOnInit () {
-    const { hasInstructions, startHackingInstructorFor } = await import('../../../../hacking-instructor')
-    this.hasInstructions = hasInstructions
-    this.startHackingInstructorFor = startHackingInstructorFor
-  }
 }

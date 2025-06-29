@@ -119,16 +119,14 @@
             "styles": ["src/styles.scss"],
             "scripts": [],
             "assets": ["src/assets"],
-            "codeCoverage": true,
-            "codeCoverageExclude": ["src/hacking-instructor/**/*.ts"]
+            "codeCoverage": true
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "src/app/**/*.ts",
-              "src/hacking-instructor/**/*.ts"
+              "src/app/**/*.ts"
             ]
           }
         }

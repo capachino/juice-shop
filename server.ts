@@ -91,7 +91,6 @@ import { changePassword } from './routes/changePassword'
 import { countryMapping } from './routes/countryMapping'
 import { retrieveAppVersion } from './routes/appVersion'
 import { captchas, verifyCaptcha } from './routes/captcha'
-import { checkKeys, nftUnlocked } from './routes/checkKeys'
 import { retrieveLoggedInUser } from './routes/currentUser'
 import authenticatedUsers from './routes/authenticatedUsers'
 import { securityQuestion } from './routes/securityQuestion'
@@ -573,8 +572,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.post('/rest/products/reviews', security.isAuthorized(), likeProductReviews())
 
   /* Web3 API endpoints */
-  app.post('/rest/web3/submitKey', checkKeys())
-  app.get('/rest/web3/nftUnlocked', nftUnlocked())
   app.get('/rest/web3/nftMintListen', nftMintListener())
   app.post('/rest/web3/walletExploitAddress', contractExploitListener())
 

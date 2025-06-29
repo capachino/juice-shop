@@ -8,7 +8,6 @@ import { BasketModelInit } from './basket'
 import { BasketItemModelInit } from './basketitem'
 import { CaptchaModelInit } from './captcha'
 import { CardModelInit } from './card'
-import { ChallengeModelInit } from './challenge'
 import { ComplaintModelInit } from './complaint'
 import { DeliveryModelInit } from './delivery'
 import { FeedbackModelInit } from './feedback'
@@ -42,7 +41,6 @@ BasketModelInit(sequelize)
 BasketItemModelInit(sequelize)
 CaptchaModelInit(sequelize)
 CardModelInit(sequelize)
-ChallengeModelInit(sequelize)
 ComplaintModelInit(sequelize)
 DeliveryModelInit(sequelize)
 FeedbackModelInit(sequelize)

@@ -138,12 +138,4 @@ export class SidenavComponent implements OnInit {
     const payload = this.loginGuard.tokenDecode()
     return payload?.data?.role === roles.accounting
   }
-
-  startHackingInstructor () {
-    this.onToggleSidenav()
-    console.log('Starting instructions for challenge "Score Board"')
-    import(/* webpackChunkName: "tutorial" */ '../../hacking-instructor').then(module => {
-      module.startHackingInstructorFor('Score Board')
-    })
-  }
 }

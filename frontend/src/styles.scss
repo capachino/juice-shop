@@ -9,8 +9,6 @@
 
 @use './theme' as *;
 
-@use './hacking-instructor/hacking-instructor.scss';
-
 @mixin link-theme($theme) {
   a:link,
   a:visited {
@@ -195,8 +193,6 @@
   @include overlay-theme($theme);
 }
 
-$bg-hacking-instructor: rgba(0, 0, 0, 0.3);
-
 .deeppurple-amber-theme {
   @include custom-components-theme($deeppurple-amber-theme);
   @include css-vars($deeppurple-amber-theme);
@@ -273,13 +269,6 @@ $bg-hacking-instructor: rgba(0, 0, 0, 0.3);
     height: 0;
     overflow: hidden;
   }
-}
-
-#hacking-instructor code {
-  background-color: $bg-hacking-instructor;
-  border-radius: 1px;
-  font-family: monospace;
-  padding: 0 4px;
 }
 
 .CodeMirror {

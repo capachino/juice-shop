@@ -106,10 +106,6 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
       this.routerSubscription = this.router.events.subscribe(() => {
         this.filterTable()
       })
-      const challenge: string = this.route.snapshot.queryParams.challenge // vuln-code-snippet hide-start
-      if (challenge && this.route.snapshot.url.join('').match(/hacking-instructor/)) {
-        this.startHackingInstructor(decodeURIComponent(challenge))
-      } // vuln-code-snippet hide-end
       if (window.innerWidth < 2600) {
         this.breakpoint = 4
         if (window.innerWidth < 1740) {
@@ -171,13 +167,6 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
     }
   }
   // vuln-code-snippet end localXssChallenge xssBonusChallenge
-
-  startHackingInstructor (challengeName: string) {
-    console.log(`Starting instructions for challenge "${challengeName}"`)
-    import(/* webpackChunkName: "tutorial" */ '../../hacking-instructor').then(module => {
-      module.startHackingInstructorFor(challengeName)
-    })
-  }
 
   showDetail (element: Product) {
     this.dialog.open(ProductDetailsComponent, {

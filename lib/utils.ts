@@ -12,7 +12,6 @@ import jsSHA from 'jssha'
 import download from 'download'
 import crypto from 'node:crypto'
 import clarinet from 'clarinet'
-import type { Challenge } from 'data/types'
 
 import isHeroku from './is-heroku'
 import isDocker from './is-docker'
