@@ -42,7 +42,6 @@ import { AddressModel } from './models/address'
 import { QuantityModel } from './models/quantity'
 import { FeedbackModel } from './models/feedback'
 import { ComplaintModel } from './models/complaint'
-import { ChallengeModel } from './models/challenge'
 import { BasketItemModel } from './models/basketitem'
 import { SecurityAnswerModel } from './models/securityAnswer'
 import { PrivacyRequestModel } from './models/privacyRequests'
@@ -50,21 +49,17 @@ import { SecurityQuestionModel } from './models/securityQuestion'
 
 import logger from './lib/logger'
 import * as utils from './lib/utils'
-import * as antiCheat from './lib/antiCheat'
 import * as security from './lib/insecurity'
 import validateConfig from './lib/startup/validateConfig'
-import cleanupFtpFolder from './lib/startup/cleanupFtpFolder'
 import customizeEasterEgg from './lib/startup/customizeEasterEgg' // vuln-code-snippet hide-line
 import customizeApplication from './lib/startup/customizeApplication'
 import validatePreconditions from './lib/startup/validatePreconditions'
-import registerWebsocketEvents from './lib/startup/registerWebsocketEvents'
 import restoreOverwrittenFilesWithOriginals from './lib/startup/restoreOverwrittenFilesWithOriginals'
 
 import datacreator from './data/datacreator'
 import locales from './data/static/locales.json'
 
 import { login } from './routes/login'
-import * as verify from './routes/verify'
 import * as address from './routes/address'
 import * as chatbot from './routes/chatbot'
 import * as metrics from './routes/metrics'
@@ -96,7 +91,6 @@ import { changePassword } from './routes/changePassword'
 import { countryMapping } from './routes/countryMapping'
 import { retrieveAppVersion } from './routes/appVersion'
 import { captchas, verifyCaptcha } from './routes/captcha'
-import * as restoreProgress from './routes/restoreProgress'
 import { checkKeys, nftUnlocked } from './routes/checkKeys'
 import { retrieveLoggedInUser } from './routes/currentUser'
 import authenticatedUsers from './routes/authenticatedUsers'
@@ -109,7 +103,7 @@ import { likeProductReviews } from './routes/likeProductReviews'
 import { repeatNotification } from './routes/repeatNotification'
 import { serveQuarantineFiles } from './routes/quarantineServer'
 import { showProductReviews } from './routes/showProductReviews'
-import { nftMintListener, walletNFTVerify } from './routes/nftMint'
+import { nftMintListener } from './routes/nftMint'
 import { createProductReviews } from './routes/createProductReviews'
 import { getWalletBalance, addWalletBalance } from './routes/wallet'
 import { retrieveAppConfiguration } from './routes/appConfiguration'
@@ -117,13 +111,10 @@ import { updateProductReviews } from './routes/updateProductReviews'
 import { servePrivacyPolicyProof } from './routes/privacyPolicyProof'
 import { profileImageUrlUpload } from './routes/profileImageUrlUpload'
 import { profileImageFileUpload } from './routes/profileImageFileUpload'
-import { serveCodeFixes, checkCorrectFix } from './routes/vulnCodeFixes'
 import { imageCaptchas, verifyImageCaptcha } from './routes/imageCaptcha'
 import { upgradeToDeluxe, deluxeMembershipStatus } from './routes/deluxe'
-import { serveCodeSnippet, checkVulnLines } from './routes/vulnCodeSnippet'
 import { orderHistory, allOrders, toggleDeliveryStatus } from './routes/orderHistory'
-import { continueCode, continueCodeFindIt, continueCodeFixIt } from './routes/continueCode'
-import { ensureFileIsPassed, handleZipFileUpload, checkUploadSize, checkFileType, handleXmlUpload, handleYamlUpload } from './routes/fileUpload'
+import { ensureFileIsPassed, handleZipFileUpload, handleXmlUpload, handleYamlUpload } from './routes/fileUpload'
 
 const app = express()
 const server = new http.Server(app)
@@ -161,7 +152,6 @@ const collectDurationPromise = (name: string, func: (...args: any) => Promise<an
 app.set('view engine', 'hbs')
 
 void collectDurationPromise('validatePreconditions', validatePreconditions)()
-void collectDurationPromise('cleanupFtpFolder', cleanupFtpFolder)()
 void collectDurationPromise('validateConfig', validateConfig)({})
 
 // Function called first to ensure that all the i18n files are reloaded successfully before other linked operations.
@@ -209,7 +199,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   /* Security Policy */
   const securityTxtExpiration = new Date()
   securityTxtExpiration.setFullYear(securityTxtExpiration.getFullYear() + 1)
-  app.get(['/.well-known/security.txt', '/security.txt'], verify.accessControlChallenges())
   app.use(['/.well-known/security.txt', '/security.txt'], securityTxt({
     contact: config.get('application.securityTxt.contact'),
     encryption: config.get('application.securityTxt.encryption'),
@@ -222,18 +211,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
 
   /* robots.txt */
   app.use(robots({ UserAgent: '*', Disallow: '/ftp' }))
-
-  /* Check for any URLs having been called that would be expected for challenge solving without cheating */
-  app.use(antiCheat.checkForPreSolveInteractions())
-
-  /* Checks for challenges solved by retrieving a file implicitly or explicitly */
-  app.use('/assets/public/images/padding', verify.accessControlChallenges())
-  app.use('/assets/public/images/products', verify.accessControlChallenges())
-  app.use('/assets/public/images/uploads', verify.accessControlChallenges())
-  app.use('/assets/i18n', verify.accessControlChallenges())
-
-  /* Checks for challenges solved by abusing SSTi and SSRF bugs */
-  app.use('/solve/challenges/server-side', verify.serverSideChallenges())
 
   /* Create middleware to change paths from the serve-index plugin from absolute to relative */
   const serveIndexMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -278,7 +255,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
 
   /* /logs directory browsing */ // vuln-code-snippet neutral-line accessLogDisclosureChallenge
   app.use('/support/logs', serveIndexMiddleware, serveIndex('logs', { icons: true, view: 'details' })) // vuln-code-snippet vuln-line accessLogDisclosureChallenge
-  app.use('/support/logs', verify.accessControlChallenges()) // vuln-code-snippet hide-line
   app.use('/support/logs/:file', serveLogFiles()) // vuln-code-snippet vuln-line accessLogDisclosureChallenge
 
   /* Swagger documentation for B2B v2 endpoints */
@@ -343,8 +319,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
 
   // vuln-code-snippet start changeProductChallenge
   /** Authorization **/
-  /* Checks on JWT in Authorization header */ // vuln-code-snippet hide-line
-  app.use(verify.jwtChallenges()) // vuln-code-snippet hide-line
   /* Baskets: Unauthorized users are not allowed to access baskets */
   app.use('/rest/basket', security.isAuthorized(), security.appendUserId())
   /* BasketItems: API only accessible for authenticated users */
@@ -386,12 +360,8 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.use('/rest/user/authentication-details', security.isAuthorized())
   app.use('/rest/basket/:id', security.isAuthorized())
   app.use('/rest/basket/:id/order', security.isAuthorized())
-  /* Challenge evaluation before finale takes over */ // vuln-code-snippet hide-start
-  app.post('/api/Feedbacks', verify.forgedFeedbackChallenge())
   /* Captcha verification before finale takes over */
   app.post('/api/Feedbacks', verifyCaptcha())
-  /* Captcha Bypass challenge verification */
-  app.post('/api/Feedbacks', verify.captchaBypassChallenge())
   /* User registration challenge verifications before finale takes over */
   app.post('/api/Users', (req: Request, res: Response, next: NextFunction) => {
     if (req.body.email !== undefined && req.body.password !== undefined && req.body.passwordRepeat !== undefined) {
@@ -405,9 +375,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
     }
     next()
   })
-  app.post('/api/Users', verify.registerAdminChallenge())
-  app.post('/api/Users', verify.passwordRepeatChallenge()) // vuln-code-snippet hide-end
-  app.post('/api/Users', verify.emptyUserRegistration())
   /* Unauthorized users are not allowed to access B2B API */
   app.use('/b2b/v2', security.isAuthorized())
   /* Check if the quantity is available in stock and limit per user not exceeded, then add item to basket */
@@ -461,8 +428,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
     security.isAuthorized(),
     twoFactorAuth.disable
   )
-  /* Verifying DB related challenges can be postponed until the next request for challenges is coming via finale */
-  app.use(verify.databaseRelatedChallenges())
 
   // vuln-code-snippet start registerAdminChallenge
   /* Generated API endpoints */
@@ -473,7 +438,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
     { name: 'Product', exclude: [], model: ProductModel },
     { name: 'Feedback', exclude: [], model: FeedbackModel },
     { name: 'BasketItem', exclude: [], model: BasketItemModel },
-    { name: 'Challenge', exclude: [], model: ChallengeModel },
     { name: 'Complaint', exclude: [], model: ComplaintModel },
     { name: 'Recycle', exclude: [], model: RecycleModel },
     { name: 'SecurityQuestion', exclude: [], model: SecurityQuestionModel },
@@ -584,12 +548,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.get('/rest/admin/application-version', retrieveAppVersion())
   app.get('/rest/admin/application-configuration', retrieveAppConfiguration())
   app.get('/rest/repeat-notification', repeatNotification())
-  app.get('/rest/continue-code', continueCode())
-  app.get('/rest/continue-code-findIt', continueCodeFindIt())
-  app.get('/rest/continue-code-fixIt', continueCodeFixIt())
-  app.put('/rest/continue-code-findIt/apply/:continueCode', restoreProgress.restoreProgressFindIt())
-  app.put('/rest/continue-code-fixIt/apply/:continueCode', restoreProgress.restoreProgressFixIt())
-  app.put('/rest/continue-code/apply/:continueCode', restoreProgress.restoreProgress())
   app.get('/rest/captcha', captchas())
   app.get('/rest/image-captcha', imageCaptchas())
   app.get('/rest/track-order/:id', trackOrder())
@@ -643,16 +601,9 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.get('/profile', security.updateAuthenticatedUsers(), getUserProfile())
   app.post('/profile', updateUserProfile())
 
-  /* Route for vulnerable code snippets */
-  app.get('/snippets/:challenge', serveCodeSnippet())
-  app.post('/snippets/verdict', checkVulnLines())
-  app.get('/snippets/fixes/:key', serveCodeFixes())
-  app.post('/snippets/fixes', checkCorrectFix())
-
   app.use(serveAngularClient())
 
   /* Error Handling */
-  app.use(verify.errorHandlingChallenge())
   app.use(errorhandler())
 }).catch((err) => {
   console.error(err)
@@ -714,7 +665,6 @@ export async function start (readyCallback?: () => void) {
     if (process.env.BASE_PATH !== '') {
       logger.info(colors.cyan(`Server using proxy base path ${colors.bold(`${process.env.BASE_PATH}`)} for redirects`))
     }
-    registerWebsocketEvents(server)
     if (readyCallback) {
       readyCallback()
     }

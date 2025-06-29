@@ -9,9 +9,7 @@ import config from 'config'
 import pug from 'pug'
 import fs from 'node:fs/promises'
 
-import * as challengeUtils from '../lib/challengeUtils'
 import { themes } from '../views/themes/themes'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import { UserModel } from '../models/user'
 import * as utils from '../lib/utils'
@@ -52,7 +50,7 @@ export function getUserProfile () {
 
     let username = user.username
 
-    if (username?.match(/#{(.*)}/) !== null && utils.isChallengeEnabled(challenges.usernameXssChallenge)) {
+    if (username?.match(/#{(.*)}/) !== null) {
       req.app.locals.abused_ssti_bug = true
       const code = username?.substring(2, username.length - 1)
       try {
@@ -85,10 +83,6 @@ export function getUserProfile () {
 
     const fn = pug.compile(template)
     const CSP = `img-src 'self' ${user?.profileImage}; script-src 'self' 'unsafe-eval' https://code.getmdl.io http://ajax.googleapis.com`
-
-    challengeUtils.solveIf(challenges.usernameXssChallenge, () => {
-      return username && user?.profileImage.match(/;[ ]*script-src(.)*'unsafe-inline'/g) !== null && utils.contains(username, '<script>alert(`xss`)</script>')
-    })
 
     res.set({
       'Content-Security-Policy': CSP

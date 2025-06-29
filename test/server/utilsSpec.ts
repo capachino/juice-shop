@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-import type { ChallengeModel } from 'models/challenge'
 
 import * as utils from '../../lib/utils'
 

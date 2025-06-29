@@ -5,8 +5,6 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 
-import * as challengeUtils from '../lib/challengeUtils'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import { UserModel } from '../models/user'
 import * as utils from '../lib/utils'
@@ -26,12 +24,6 @@ export function updateUserProfile () {
         next(new Error('User not found'))
         return
       }
-
-      challengeUtils.solveIf(challenges.csrfChallenge, () => {
-        return ((req.headers.origin?.includes('://htmledit.squarefree.com')) ??
-          (req.headers.referer?.includes('://htmledit.squarefree.com'))) &&
-          req.body.username !== user.username
-      })
 
       const savedUser = await user.update({ username: req.body.username })
       const userWithStatus = utils.queryResultToJson(savedUser)
