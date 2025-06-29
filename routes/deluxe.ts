@@ -5,7 +5,6 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 
-import * as challengeUtils from '../lib/challengeUtils'
 import { WalletModel } from '../models/wallet'
 import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
@@ -41,9 +40,6 @@ export function upgradeToDeluxe () {
 
       try {
         const updatedUser = await user.update({ role: security.roles.deluxe, deluxeToken: security.deluxeToken(user.email) })
-        challengeUtils.solveIf(challenges.freeDeluxeChallenge, () => {
-          return security.verify(utils.jwtFrom(req)) && req.body.paymentMode !== 'wallet' && req.body.paymentMode !== 'card'
-        })
         const userWithStatus = utils.queryResultToJson(updatedUser)
         const updatedToken = security.authorize(userWithStatus)
         security.authenticatedUsers.put(updatedToken, userWithStatus)

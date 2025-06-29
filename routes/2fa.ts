@@ -3,13 +3,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-import config from 'config'
 import { type Request, type Response } from 'express'
 import { BasketModel } from '../models/basket'
 import { UserModel } from '../models/user'
-import * as challengeUtils from '../lib/challengeUtils'
 import * as utils from '../lib/utils'
-import { challenges } from '../data/datacache'
 import * as otplib from 'otplib'
 import * as security from '../lib/insecurity'
 
@@ -41,7 +38,6 @@ export async function verify (req: Request, res: Response) {
     if (!isValid) {
       return res.status(401).send()
     }
-    challengeUtils.solveIf(challenges.twoFactorAuthUnsafeSecretStorageChallenge, () => { return user.email === 'wurstbrot@' + config.get<string>('application.domain') })
 
     const [basket] = await BasketModel.findOrCreate({ where: { UserId: userId } })
 

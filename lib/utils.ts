@@ -74,25 +74,6 @@ export const version = (module?: string) => {
   }
 }
 
-let cachedCtfKey: string | undefined
-const getCtfKey = () => {
-  if (!cachedCtfKey) {
-    if (process.env.CTF_KEY !== undefined && process.env.CTF_KEY !== '') {
-      cachedCtfKey = process.env.CTF_KEY
-    } else {
-      const data = fs.readFileSync('ctf.key', 'utf8')
-      cachedCtfKey = data
-    }
-  }
-  return cachedCtfKey
-}
-export const ctfFlag = (text: string) => {
-  const shaObj = new jsSHA('SHA-1', 'TEXT') // eslint-disable-line new-cap
-  shaObj.setHMACKey(getCtfKey(), 'TEXT')
-  shaObj.update(text)
-  return shaObj.getHMAC('HEX')
-}
-
 export const toMMMYY = (date: Date) => {
   const month = date.getMonth()
   const year = date.getFullYear()
@@ -144,54 +125,6 @@ export const jwtFrom = ({ headers }: { headers: any }) => {
 
 export const randomHexString = (length: number): string => {
   return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length)
-}
-
-export interface ChallengeEnablementStatus {
-  enabled: boolean
-  disabledBecause: string | null
-}
-
-type SafetyModeSetting = 'enabled' | 'disabled' | 'auto'
-
-type isEnvironmentFunction = () => boolean
-
-export function getChallengeEnablementStatus (challenge: Challenge,
-  safetyModeSetting: SafetyModeSetting = config.get<SafetyModeSetting>('challenges.safetyMode'),
-  isEnvironmentFunctions: {
-    isDocker: isEnvironmentFunction
-    isHeroku: isEnvironmentFunction
-    isWindows: isEnvironmentFunction
-    isGitpod: isEnvironmentFunction
-  } = { isDocker, isHeroku, isWindows, isGitpod }): ChallengeEnablementStatus {
-  if (!challenge?.disabledEnv) {
-    return { enabled: true, disabledBecause: null }
-  }
-
-  if (safetyModeSetting === 'disabled') {
-    return { enabled: true, disabledBecause: null }
-  }
-
-  if (challenge.disabledEnv?.includes('Docker') && isEnvironmentFunctions.isDocker()) {
-    return { enabled: false, disabledBecause: 'Docker' }
-  }
-  if (challenge.disabledEnv?.includes('Heroku') && isEnvironmentFunctions.isHeroku()) {
-    return { enabled: false, disabledBecause: 'Heroku' }
-  }
-  if (challenge.disabledEnv?.includes('Windows') && isEnvironmentFunctions.isWindows()) {
-    return { enabled: false, disabledBecause: 'Windows' }
-  }
-  if (challenge.disabledEnv?.includes('Gitpod') && isEnvironmentFunctions.isGitpod()) {
-    return { enabled: false, disabledBecause: 'Gitpod' }
-  }
-  if (challenge.disabledEnv && safetyModeSetting === 'enabled') {
-    return { enabled: false, disabledBecause: 'Safety Mode' }
-  }
-
-  return { enabled: true, disabledBecause: null }
-}
-export function isChallengeEnabled (challenge: Challenge): boolean {
-  const { enabled } = getChallengeEnablementStatus(challenge)
-  return enabled
 }
 
 export const parseJsonCustom = (jsonString: string) => {

@@ -5,7 +5,6 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 
-import * as challengeUtils from '../lib/challengeUtils'
 import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import { type Review } from '../data/types'
@@ -43,9 +42,6 @@ export function likeProductReviews () {
         const updatedReview: Review = await db.reviewsCollection.findOne({ _id: id })
         const updatedLikedBy = updatedReview.likedBy
         updatedLikedBy.push(user.data.email)
-
-        const count = updatedLikedBy.filter(email => email === user.data.email).length
-        challengeUtils.solveIf(challenges.timingAttackChallenge, () => count > 2)
 
         const result = await db.reviewsCollection.update(
           { _id: id },

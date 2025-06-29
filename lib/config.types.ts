@@ -72,25 +72,6 @@ export interface ApplicationConfig {
   }
 }
 
-export interface ChallengesConfig {
-  showSolvedNotifications: boolean
-  showHints: boolean
-  showMitigations: boolean
-  codingChallengesEnabled: 'never' | 'solved' | 'always'
-  restrictToTutorialsFirst: boolean
-  overwriteUrlForProductTamperingChallenge: string
-  xssBonusPayload: string
-  safetyOverride: boolean
-  showFeedbackButtons: boolean
-  csafHashValue: string
-}
-
-export interface HackingInstructorConfig {
-  isEnabled: boolean
-  avatarImage: string
-  hintPlaybackSpeed: 'faster' | 'fast' | 'normal' | 'slow' | 'slower'
-}
-
 export interface Product {
   name: string
   price: number
@@ -118,21 +99,9 @@ export interface Memory {
   geoStalkingVisualSecurityAnswer?: string
 }
 
-export interface CtfConfig {
-  showFlagsInNotifications: boolean
-  showCountryDetailsInNotifications: 'none' | 'name' | 'flag' | 'both'
-  countryMapping: Record<string, {
-    name: string
-    code: string
-  }>
-}
-
 export interface AppConfig {
   server: ServerConfig
   application: ApplicationConfig
-  challenges: ChallengesConfig
-  hackingInstructor: HackingInstructorConfig
   products: Product[]
   memories: Memory[]
-  ctf: CtfConfig
 }

@@ -8,7 +8,6 @@ import { type Request, type Response, type NextFunction } from 'express'
 import { type User } from '../data/types'
 import { UserModel } from '../models/user'
 import jwt, { type JwtPayload, type VerifyErrors } from 'jsonwebtoken'
-import * as challengeUtils from '../lib/challengeUtils'
 import logger from '../lib/logger'
 import config from 'config'
 import download from 'download'
@@ -18,7 +17,6 @@ import { Bot } from 'juicy-chat-bot'
 import validateChatBot from '../lib/startup/validateChatBot'
 import * as security from '../lib/insecurity'
 import * as botUtils from '../lib/botUtils'
-import { challenges } from '../data/datacache'
 
 let trainingFile = config.get<string>('application.chatBot.trainingData')
 let testCommand: string
@@ -116,7 +114,6 @@ async function processQuery (user: User, req: Request, res: Response, next: Next
         body: config.get('application.chatBot.defaultResponse')
       })
     } catch (err) {
-      challengeUtils.solveIf(challenges.killChatbotChallenge, () => { return true })
       res.status(200).json({
         action: 'response',
         body: `Remember to stay hydrated while I try to recover from "${utils.getErrorMessage(err)}"...`

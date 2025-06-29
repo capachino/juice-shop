@@ -15,10 +15,6 @@ import portscanner from 'portscanner'
 // @ts-expect-error FIXME due to non-existing type definitions for check-internet-connected
 import checkInternetConnected from 'check-internet-connected'
 
-const domainDependencies = {
-  'https://www.alchemy.com/': ['"Mint the Honeypot" challenge', '"Wallet Depletion" challenge']
-}
-
 const validatePreconditions = async ({ exitOnFailure = true } = {}) => {
   let success = true
   success = checkIfRunningOnSupportedNodeVersion(process.version) && success

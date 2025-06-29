@@ -8,8 +8,6 @@ import path from 'node:path'
 import { SecurityQuestionModel } from '../models/securityQuestion'
 import { PrivacyRequestModel } from '../models/privacyRequests'
 import { SecurityAnswerModel } from '../models/securityAnswer'
-import * as challengeUtils from '../lib/challengeUtils'
-import { challenges } from '../data/datacache'
 import * as security from '../lib/insecurity'
 import { UserModel } from '../models/user'
 
@@ -77,7 +75,6 @@ router.post('/', async (req: Request<Record<string, unknown>, Record<string, unk
           } else {
             const sendlfrResponse: string = html.slice(0, 100) + '......'
             res.send(sendlfrResponse)
-            challengeUtils.solveIf(challenges.lfrChallenge, () => { return true })
           }
         })
       } else {
